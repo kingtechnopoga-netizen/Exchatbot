@@ -6,89 +6,143 @@
   <meta name="theme-color" content="#050d08" />
   <meta name="description" content="ExChatBot - lightweight AI chatbot with multiple free models, powered by puter.js" />
   <title>ExChatBot</title>
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050d08'/%3E%3Ctext x='50%25' y='58%25' font-family='monospace' font-size='40' font-weight='700' text-anchor='middle' fill='%2300ff88'%3E%26gt;_%3C/text%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23050d08'/%3E%3Ctext x='50%25' y='58%25' font-family='monospace' font-size='40' font-weight='700' text-anchor='middle' fill='%2300ff88'%3E%26gt;_%3C/text%3E%3C/svg%3E" />
   <script src="https://js.puter.com/v2/" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body data-theme="dark" data-font="medium">
-  <header class="app-header">
-    <div class="brand">
-      <span class="brand-mark">&gt;_</span>
-      <h1 class="brand-name">ExChatBot</h1>
-    </div>
-    <button id="settingsBtn" class="icon-btn" aria-label="Open settings" title="Settings">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"></path>
-      </svg>
-    </button>
-  </header>
+  <!-- ===== App shell ===== -->
+  <div class="app">
 
-  <main class="app-main">
-    <div id="chat" class="chat" aria-live="polite" aria-label="Chat messages">
-      <div class="welcome">
-        <div class="welcome-card">
-          <div class="welcome-title">Welcome to ExChatBot</div>
-          <p class="welcome-text">
-            A lightweight AI assistant powered by puter.js. Pick a model below, toggle
-            <strong>Code Assistant</strong> for programming help, and start chatting.
-          </p>
-          <div class="welcome-tips">
-            <span class="tip">// Ask anything</span>
-            <span class="tip">// Generate code</span>
-            <span class="tip">// Debug errors</span>
-            <span class="tip">// Explain concepts</span>
+    <!-- ===== Sidebar / drawer ===== -->
+    <aside id="sidebar" class="sidebar" aria-label="Conversations">
+      <div class="sidebar-head">
+        <button id="newChatBtn" class="btn btn-accent btn-block" type="button">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          New chat
+        </button>
+      </div>
+      <div class="sidebar-search">
+        <svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="searchInput" type="search" placeholder="Search messages..." aria-label="Search messages" />
+      </div>
+      <nav id="convList" class="conv-list" aria-label="Saved conversations"></nav>
+      <div class="sidebar-foot">
+        <button id="exportBtn" class="btn btn-ghost btn-sm" type="button" title="Export current chat">
+          <svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Export
+        </button>
+        <button id="shortcutsBtn" class="btn btn-ghost btn-sm" type="button" title="Keyboard shortcuts">
+          <svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h12"/></svg>
+          Shortcuts
+        </button>
+      </div>
+    </aside>
+
+    <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
+    <!-- ===== Main column ===== -->
+    <div class="main">
+      <header class="app-header">
+        <button id="menuBtn" class="icon-btn menu-btn" aria-label="Toggle sidebar" type="button">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div class="brand">
+          <span class="brand-mark">&gt;_</span>
+          <h1 class="brand-name">ExChatBot</h1>
+        </div>
+        <div class="header-actions">
+          <button id="voiceBtn" class="icon-btn" aria-label="Voice input" type="button" title="Voice input">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+          </button>
+          <button id="settingsBtn" class="icon-btn" aria-label="Open settings" type="button" title="Settings">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3 1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <div id="chat" class="chat" aria-live="polite" aria-label="Chat messages">
+          <div id="welcome" class="welcome">
+            <div class="welcome-card">
+              <div class="welcome-title">&gt; Welcome to ExChatBot</div>
+              <p class="welcome-text">
+                Lightweight AI chatbot powered by puter.js. Ask anything, generate code, debug,
+                translate, summarize — pick a model and start chatting.
+              </p>
+              <div class="quick-prompts" id="quickPrompts">
+                <button class="qp" data-prompt="Explain this code step by step:&#10;&#10;```&#10;[paste your code here]&#10;```">Explain code</button>
+                <button class="qp" data-prompt="Debug and fix the following code. Show the corrected version with comments:&#10;&#10;```&#10;[paste code]&#10;```">Debug code</button>
+                <button class="qp" data-prompt="Generate a complete working example of: ">Generate code</button>
+                <button class="qp" data-prompt="Summarize the following text in 3 bullet points:&#10;&#10;">Summarize</button>
+                <button class="qp" data-prompt="Translate the following text to English (preserve meaning and tone):&#10;&#10;">Translate</button>
+                <button class="qp" data-prompt="Act as a senior interview coach. Ask me one technical interview question, wait for my answer, then give detailed feedback.">Interview prep</button>
+                <button class="qp" data-prompt="Write a clean, idiomatic regex for: ">Regex helper</button>
+                <button class="qp" data-prompt="Write a SQL query that: ">SQL helper</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div class="controls">
+          <label class="control-field">
+            <span class="control-label">Model</span>
+            <select id="modelSelect" aria-label="Select AI model"></select>
+          </label>
+
+          <label class="toggle" title="Toggle Code Assistant mode">
+            <input type="checkbox" id="codeToggle" />
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-label">Code</span>
+          </label>
+
+          <label class="toggle" title="Stream responses token by token">
+            <input type="checkbox" id="streamToggle" checked />
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-label">Stream</span>
+          </label>
+        </div>
+
+        <form id="composer" class="composer" autocomplete="off">
+          <div class="input-wrap">
+            <textarea
+              id="input"
+              class="input"
+              rows="1"
+              placeholder="Ask anything... (Shift+Enter for newline)"
+              aria-label="Message input"
+              maxlength="16000"
+            ></textarea>
+            <div class="input-meta">
+              <span id="charCount" class="char-count">0 / 16000</span>
+            </div>
+          </div>
+          <button id="sendBtn" type="submit" class="send-btn" aria-label="Send message">
+            <svg class="ic ic-send" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+          <button id="stopBtn" type="button" class="stop-btn" aria-label="Stop generation" hidden>
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+          </button>
+        </form>
+      </main>
+
+      <footer class="app-footer">
+        <span>Powered by <a href="https://puter.com" target="_blank" rel="noopener">puter.js</a></span>
+      </footer>
     </div>
+  </div>
 
-    <div class="controls">
-      <label class="control-field">
-        <span class="control-label">Model</span>
-        <select id="modelSelect" aria-label="Select AI model"></select>
-      </label>
-
-      <label class="toggle">
-        <input type="checkbox" id="codeToggle" />
-        <span class="toggle-track" aria-hidden="true"></span>
-        <span class="toggle-label">Code Assistant</span>
-      </label>
-    </div>
-
-    <form id="composer" class="composer" autocomplete="off">
-      <textarea
-        id="input"
-        class="input"
-        rows="1"
-        placeholder="Type a message..."
-        aria-label="Message input"
-        maxlength="8000"
-      ></textarea>
-      <button id="sendBtn" type="submit" class="send-btn" aria-label="Send message">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M22 2L11 13"></path>
-          <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
-        </svg>
-      </button>
-    </form>
-  </main>
-
-  <footer class="app-footer">
-    <span>Powered by <a href="https://puter.com" target="_blank" rel="noopener">puter.js</a></span>
-  </footer>
-
-  <!-- Settings modal -->
+  <!-- ===== Settings modal ===== -->
   <div id="settingsModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
     <div class="modal-backdrop" data-close></div>
     <div class="modal-panel" role="document">
       <div class="modal-header">
         <h2 id="settingsTitle">Settings</h2>
-        <button class="icon-btn" data-close aria-label="Close settings">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M18 6L6 18"></path><path d="M6 6l12 12"></path>
-          </svg>
+        <button class="icon-btn" data-close aria-label="Close settings" type="button">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
         </button>
       </div>
 
@@ -102,12 +156,12 @@
         </div>
 
         <div class="setting-row">
-          <label class="setting-label" for="modelSelect2">Model</label>
+          <label class="setting-label" for="modelSelect2">Default model</label>
           <select id="modelSelect2"></select>
         </div>
 
         <div class="setting-row">
-          <span class="setting-label">Font Size</span>
+          <span class="setting-label">Font size</span>
           <div class="seg" role="radiogroup" aria-label="Font size">
             <button type="button" class="seg-btn" data-font="small" role="radio">Small</button>
             <button type="button" class="seg-btn" data-font="medium" role="radio">Medium</button>
@@ -116,7 +170,25 @@
         </div>
 
         <div class="setting-row">
-          <button id="clearChatBtn" type="button" class="btn btn-danger">Clear Chat</button>
+          <label class="setting-label" for="tempRange">Creativity (temperature)</label>
+          <div class="range-wrap">
+            <input id="tempRange" type="range" min="0" max="1.5" step="0.1" value="0.7" />
+            <span id="tempValue" class="range-value">0.7</span>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span class="setting-label">Voice output</span>
+          <label class="toggle">
+            <input type="checkbox" id="autoSpeakToggle" />
+            <span class="toggle-track" aria-hidden="true"></span>
+            <span class="toggle-label">Auto-speak AI replies</span>
+          </label>
+        </div>
+
+        <div class="setting-actions">
+          <button id="clearChatBtn" type="button" class="btn btn-danger">Clear current chat</button>
+          <button id="deleteAllBtn" type="button" class="btn btn-danger">Delete all chats</button>
         </div>
 
         <div class="donation">
@@ -127,14 +199,63 @@
           <div class="donation-row">
             <span class="donation-label">GCash</span>
             <code id="gcashNumber" class="donation-number">09482887486</code>
-            <button id="copyGcashBtn" type="button" class="btn btn-ghost" data-copy-target="gcashNumber">Copy</button>
+            <button id="copyGcashBtn" type="button" class="btn btn-ghost">Copy</button>
           </div>
+        </div>
+
+        <div class="about">
+          <span>v2.0 &middot; <a href="https://puter.com" target="_blank" rel="noopener">puter.js</a> &middot; static site</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
+  <!-- ===== Shortcuts modal ===== -->
+  <div id="shortcutsModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="document">
+      <div class="modal-header">
+        <h2 id="shortcutsTitle">Keyboard shortcuts</h2>
+        <button class="icon-btn" data-close aria-label="Close" type="button">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="shortcuts">
+          <li><kbd>Enter</kbd> <span>Send message</span></li>
+          <li><kbd>Shift</kbd>+<kbd>Enter</kbd> <span>New line</span></li>
+          <li><kbd>Ctrl</kbd>+<kbd>K</kbd> <span>New chat</span></li>
+          <li><kbd>Ctrl</kbd>+<kbd>B</kbd> <span>Toggle sidebar</span></li>
+          <li><kbd>Ctrl</kbd>+<kbd>/</kbd> <span>Show shortcuts</span></li>
+          <li><kbd>Ctrl</kbd>+<kbd>L</kbd> <span>Clear current chat</span></li>
+          <li><kbd>Esc</kbd> <span>Close modal / stop generation</span></li>
+        </ul>
+        <p class="hint">On macOS, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Edit modal ===== -->
+  <div id="editModal" class="modal" hidden aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="document">
+      <div class="modal-header">
+        <h2>Edit message</h2>
+        <button class="icon-btn" data-close aria-label="Close" type="button">
+          <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea id="editTextarea" rows="5" class="input" aria-label="Edit message text"></textarea>
+        <div class="setting-actions">
+          <button id="editCancelBtn" type="button" class="btn">Cancel</button>
+          <button id="editSaveBtn" type="button" class="btn btn-accent">Save &amp; resend</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Toast ===== -->
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

@@ -1,30 +1,28 @@
-# Render Blueprint for ExChatBot
-# Deploy: https://render.com/docs/blueprint-spec
+# Render Blueprint for ExChatBot v2
+# https://render.com/docs/blueprint-spec
 #
-# To use:
+# Usage:
 #   1. Push this repo to GitHub.
-#   2. In Render dashboard: New + -> Blueprint -> select this repo.
+#   2. In the Render dashboard: New + -> Blueprint -> select this repo.
 #   3. Render reads this file and provisions the static site automatically.
 services:
   - type: web
     name: exchatbot
     runtime: static
-    # Pure static site — nothing to build.
     buildCommand: "echo 'No build step required'"
-    # Serve files from the repo root.
     staticPublishPath: .
     pullRequestPreviewsEnabled: true
     autoDeploy: true
 
-    # SPA-style fallback (also serves index.html for any unknown path,
-    # which is harmless for our single-page app).
+    # Single-page-app fallback (harmless for a one-page site).
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
 
-    # Sensible default headers: long cache for static assets,
-    # no cache for the HTML entry, basic security hardening.
+    # Caching + security headers.
+    # Long cache for static assets; no cache for HTML, manifest, and
+    # the service worker so updates ship immediately.
     headers:
       - path: /*
         name: X-Content-Type-Options
@@ -35,12 +33,28 @@ services:
       - path: /*
         name: X-Frame-Options
         value: SAMEORIGIN
+      - path: /*
+        name: Permissions-Policy
+        value: microphone=(self), camera=(), geolocation=()
+
       - path: /*.css
         name: Cache-Control
         value: public, max-age=31536000, immutable
-      - path: /*.js
+      - path: /*.svg
         name: Cache-Control
         value: public, max-age=31536000, immutable
+
+      # Don't cache the entry document, the SW, or the manifest — these
+      # control updates of everything else.
       - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /sw.js
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /script.js
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      - path: /manifest.webmanifest
         name: Cache-Control
         value: no-cache, no-store, must-revalidate

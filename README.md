@@ -1,23 +1,58 @@
-# ExChatBot
+# ExChatBot v2
 
-A lightweight, mobile-first AI chatbot website with a dark green hacker-style UI.
-Powered by [puter.js](https://puter.com) for free access to multiple AI models — no
-API keys, no backend, no database. Just static files.
+A lightweight, mobile-first AI chatbot with a dark-green hacker UI.
+Powered by [puter.js](https://puter.com) for free access to 30+ AI models — no
+API keys, no backend, no database. Pure static site, installable as a PWA.
 
 ## Features
 
-- Chat with multiple free AI models (GPT-4o, Claude, DeepSeek, Gemini, Llama, Mistral, ...)
-- Model selector with safe default and easy switching
-- **Code Assistant** toggle for programming help (explain, generate, debug)
-- Message history within the current session
-- Copy button on AI responses
-- Clear chat button
-- Loading indicator and friendly error messages
-- Settings: theme (dark / light), model, font size (S / M / L)
-- Donation section with copy-to-clipboard for GCash number
-- Theme & preferences saved to `localStorage`
-- Mobile-optimized input, auto-scroll, responsive layout
-- Tiny footprint — vanilla HTML / CSS / JS, no build step
+### Chat
+- 30+ models from OpenAI, Anthropic, Google, DeepSeek, Meta, Mistral, xAI
+- Models grouped by provider in the dropdown for easy picking
+- **Streaming responses** (token-by-token) with a Stop button
+- **Code Assistant** mode for clean, beginner-friendly code help
+- **Regenerate** any AI reply
+- **Edit & resend** any user message (truncates the chat from that point)
+- **Quick-prompt templates** (Explain code, Debug, Generate, Summarize,
+  Translate, Interview prep, Regex, SQL)
+- Friendly fallback when a model fails
+
+### Conversations
+- **Multi-chat sidebar** — keep multiple conversations side by side
+- All chats persist in `localStorage` across page reloads
+- **Search** across titles and messages
+- **Export** current chat as Markdown
+- Per-chat title auto-generated from the first message
+
+### Voice & speech
+- **Voice input** via Web Speech API (Chrome / Android)
+- **Text-to-speech** for AI replies — per-message Speak button or
+  optional auto-speak toggle
+
+### UI
+- Mobile-first responsive layout, drawer sidebar on mobile
+- Dark / Light theme, three font sizes
+- Temperature (creativity) slider
+- **Markdown rendering** — headings, lists, blockquotes, tables, links
+- **Syntax highlighting** for js/ts, python, html, css, json, shell
+- Per-code-block Copy button
+- Character counter, auto-scroll, auto-grow textarea
+- Toast notifications
+
+### Power user
+- **Keyboard shortcuts**: `Enter` send · `Shift+Enter` newline ·
+  `Ctrl/Cmd+K` new chat · `Ctrl/Cmd+B` toggle sidebar ·
+  `Ctrl/Cmd+/` shortcuts · `Ctrl/Cmd+L` clear current chat ·
+  `Esc` close modal / stop generation
+- **PWA**: installable on mobile/desktop, offline shell via service worker
+- **GCash donation** with copy-to-clipboard
+
+### Performance
+- ~50 KB total payload
+- Vanilla JS, no frameworks, no build step
+- No heavy animations, respects `prefers-reduced-motion`
+- Service worker caches the static shell — instant repeat loads
+- AI requests always hit the network (never stale)
 
 ## Project structure
 
@@ -26,13 +61,18 @@ API keys, no backend, no database. Just static files.
 ├── index.html
 ├── style.css
 ├── script.js
-├── render.yaml      # Render Blueprint (Infrastructure as Code)
+├── sw.js                  # Service worker (PWA offline shell)
+├── manifest.webmanifest   # PWA manifest
+├── icon-192.svg
+├── icon-512.svg
+├── icon-maskable.svg
+├── render.yaml            # Render Blueprint (IaC)
 └── README.md
 ```
 
 ## Run locally
 
-It's a pure static site. Any of these works:
+It's a pure static site:
 
 ```bash
 # Python
@@ -40,32 +80,30 @@ python3 -m http.server 8080
 
 # Node (if installed)
 npx serve .
-
-# Or just open index.html in your browser
 ```
 
-Then visit http://localhost:8080.
+Then visit <http://localhost:8080>. Note: the service worker registers only
+under `https://` or `http://localhost`.
 
 ## Deploy on Render
 
-This repo ships with a **Render Blueprint** (`render.yaml`) so deploys are
-one-click — no manual dashboard config needed.
+This repo ships with a **Render Blueprint** (`render.yaml`).
 
 ### Option A — Blueprint (recommended)
 
-1. Push this project to a GitHub repository.
-2. Go to <https://dashboard.render.com> and click **New + → Blueprint**.
-3. Select your `Exchatbot` repo and click **Apply**.
+1. Push to GitHub.
+2. <https://dashboard.render.com> → **New + → Blueprint**.
+3. Pick the repo and click **Apply**.
 4. Render reads `render.yaml`, provisions a static site, and deploys.
 
 You'll get a URL like `https://exchatbot.onrender.com`. Auto-deploys on every
-push to `main`, and PR previews are enabled by default.
+push to `main`, PR previews are enabled.
 
 ### Option B — Manual static site
 
 1. Push to GitHub.
 2. <https://dashboard.render.com> → **New + → Static Site**.
-3. Connect the repo and configure:
+3. Configure:
    - **Build Command:** *(leave empty)*
    - **Publish Directory:** `.`
 4. Click **Create Static Site**.
@@ -73,9 +111,17 @@ push to `main`, and PR previews are enabled by default.
 ## Notes on puter.js
 
 - Loaded from CDN: `<script src="https://js.puter.com/v2/"></script>`
-- Free tier requires no API key. The first request may prompt the user to
-  sign in to puter.com in a popup.
-- If a model errors or is unavailable, switch to another from the dropdown.
+- Free tier — no API key. The first request may show a one-time popup to
+  sign in to puter.com.
+- Some models occasionally rate-limit. If a model errors, just pick another
+  from the dropdown and click Regenerate.
+
+## Browser support
+
+- Chromium (Chrome/Edge/Brave) — full support
+- Firefox — chat works, no Web Speech voice input
+- Safari — chat + TTS work, voice input limited
+- Mobile (Android/iOS) — full chat support, install as PWA via "Add to home screen"
 
 ## Support
 
