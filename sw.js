@@ -1,5 +1,5 @@
-/* ExChatBot service worker — minimal offline shell */
-const VERSION = "v2.0.0";
+/* ExChatBot service worker — minimal offline shell, network-first */
+const VERSION = "v2.1.0";
 const CACHE = "excb-" + VERSION;
 
 const SHELL = [
@@ -33,28 +33,20 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(req.url);
 
-  // Never cache puter.js or any cross-origin AI requests — always go to network.
+  // Cross-origin (puter.js, etc.) always go to network — never cached here.
   if (url.origin !== self.location.origin) return;
 
-  // For navigations: network-first, fall back to cached index.html
-  if (req.mode === "navigate") {
-    event.respondWith(
-      fetch(req).catch(() => caches.match("./index.html"))
-    );
-    return;
-  }
-
-  // Static assets: stale-while-revalidate
+  // Network-first for everything same-origin: ensures updates ship instantly.
+  // Cache is only used as offline fallback.
   event.respondWith(
-    caches.match(req).then((cached) => {
-      const network = fetch(req).then((res) => {
-        if (res && res.status === 200 && res.type === "basic") {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy));
-        }
-        return res;
-      }).catch(() => cached);
-      return cached || network;
-    })
+    fetch(req).then((res) => {
+      if (res && res.status === 200 && res.type === "basic") {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+      }
+      return res;
+    }).catch(() =>
+      caches.match(req).then((cached) => cached || caches.match("./index.html"))
+    )
   );
 });

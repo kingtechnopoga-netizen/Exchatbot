@@ -171,12 +171,18 @@ body { font-size: var(--fs); }
 
 /* ----- Header ----- */
 .app-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px;
+  position: relative;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
-  padding-top: max(10px, env(safe-area-inset-top));
   flex: 0 0 auto;
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+.app-header-inner {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 10px 12px;
 }
 .brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .brand-mark {
@@ -244,6 +250,7 @@ body { font-size: var(--fs); }
   max-width: 980px;
   margin: 0 auto;
   padding: 0 12px;
+  align-self: center;
 }
 
 /* ----- Chat area ----- */
@@ -251,18 +258,20 @@ body { font-size: var(--fs); }
   flex: 1 1 auto;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 14px 2px 8px;
+  padding: 14px 0 8px;
   display: flex; flex-direction: column; gap: 12px;
   scroll-behavior: smooth;
 }
 
-.welcome { padding: 12px 0; }
+.welcome { padding: 12px 0; display: flex; justify-content: center; }
 .welcome-card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 16px;
+  padding: 18px;
   box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 640px;
 }
 .welcome-title {
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -607,6 +616,10 @@ optgroup { color: var(--muted); font-style: normal; font-weight: 600; }
   color: var(--muted);
   padding: 6px 12px 10px;
   padding-bottom: max(6px, env(safe-area-inset-bottom));
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  align-self: center;
 }
 .app-footer a { color: var(--accent); text-decoration: none; }
 .app-footer a:hover { text-decoration: underline; }
