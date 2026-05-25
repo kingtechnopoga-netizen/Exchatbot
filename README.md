@@ -26,6 +26,7 @@ API keys, no backend, no database. Just static files.
 ├── index.html
 ├── style.css
 ├── script.js
+├── render.yaml      # Render Blueprint (Infrastructure as Code)
 └── README.md
 ```
 
@@ -45,17 +46,29 @@ npx serve .
 
 Then visit http://localhost:8080.
 
-## Deploy on Render (Static Site)
+## Deploy on Render
+
+This repo ships with a **Render Blueprint** (`render.yaml`) so deploys are
+one-click — no manual dashboard config needed.
+
+### Option A — Blueprint (recommended)
 
 1. Push this project to a GitHub repository.
-2. Go to <https://dashboard.render.com> and click **New + → Static Site**.
-3. Connect your GitHub repo.
-4. Configure:
+2. Go to <https://dashboard.render.com> and click **New + → Blueprint**.
+3. Select your `Exchatbot` repo and click **Apply**.
+4. Render reads `render.yaml`, provisions a static site, and deploys.
+
+You'll get a URL like `https://exchatbot.onrender.com`. Auto-deploys on every
+push to `main`, and PR previews are enabled by default.
+
+### Option B — Manual static site
+
+1. Push to GitHub.
+2. <https://dashboard.render.com> → **New + → Static Site**.
+3. Connect the repo and configure:
    - **Build Command:** *(leave empty)*
    - **Publish Directory:** `.`
-5. Click **Create Static Site** and wait for the deploy to finish.
-
-Render will give you a URL like `https://exchatbot.onrender.com` — share it on any device.
+4. Click **Create Static Site**.
 
 ## Notes on puter.js
 

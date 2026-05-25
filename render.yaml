@@ -1,0 +1,46 @@
+# Render Blueprint for ExChatBot
+# Deploy: https://render.com/docs/blueprint-spec
+#
+# To use:
+#   1. Push this repo to GitHub.
+#   2. In Render dashboard: New + -> Blueprint -> select this repo.
+#   3. Render reads this file and provisions the static site automatically.
+services:
+  - type: web
+    name: exchatbot
+    runtime: static
+    # Pure static site — nothing to build.
+    buildCommand: "echo 'No build step required'"
+    # Serve files from the repo root.
+    staticPublishPath: .
+    pullRequestPreviewsEnabled: true
+    autoDeploy: true
+
+    # SPA-style fallback (also serves index.html for any unknown path,
+    # which is harmless for our single-page app).
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    # Sensible default headers: long cache for static assets,
+    # no cache for the HTML entry, basic security hardening.
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*.css
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*.js
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
